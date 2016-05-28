@@ -1,0 +1,30 @@
+require(devtools)
+install_github("your-GitHub-username/Rfacebook", subdir = "Rfacebook")
+require(Rfacebook)
+
+library(Rfacebook)
+fb_oauth <- fbOAuth(app_id="1674233022814266", app_secret="515e2fbee9a6f2f4b70edb13cc7d7af5",extended_permissions = TRUE)
+fbtoken<-"CAAXytMCYmDoBALiovYgkWQTfJIgiaCC8EtzyAAopwmyHZBzqZB01ZAzNYguxeuXU6IXDdWHaWxiD8YAIXX4u8GpWSuYZCXTxzVZCG6zrpnv6pksGPWWd0wpnPeXe7ZCqAn1JnVxsNFz0ZCs84tmFW7ghETZA5vSLJqMbNpAS6ZB0TKavZBBiyCyOfaVoFkhOe927SOJDnY2JYAa6OyWutNt3Od"
+#save(fb_oauth,file="fb_oauth")
+#load("fb_oauth")
+
+me<-getUsers("me", token=fbtoken)
+me$name
+my_friends<-getFriends(fbtoken, simplify=TRUE)
+my_likes<-getLikes(user="me",token=fbtoken)
+
+#Extracting post information from Facebook group(Public groups)
+grouplist<-searchGroup("bitsian", token=fbtoken)
+group_id<-grouplist[13,3]
+group_postinfo<-getGroup(group_id, token=fbtoken, n=100, since='2013/01/01', until='2013/01/31')
+
+#Extracting Insights from Facebook Page(Admin Role required)
+pagelist<-searchPages("Mime Club", token=fbtoken)
+page_id<-grouplist[2,3]
+getInsights(page_id, token=fbtoken, metric=page_fan_adds, period="lifetime")
+
+#Extracting list of Likes of Facebook Friend
+friendlikes<-getLikes("me", n=500, token=fbtoken)
+
+#Extracting network of friends of authenticated user
+friend_network<-getNetwork(token=fbtoken, format="edgelist", verbose=T)
